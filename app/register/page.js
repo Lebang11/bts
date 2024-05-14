@@ -65,7 +65,7 @@ const Register = () => {
         <div className={`${styles.formboxflex} w-100 h-100`}>
             
             <form onSubmit={handleSubmit} className={styles.formbox}>
-                <h1 className="fw-lighter text-secondary " style={{
+                <h1 className="fw-lighter text-secondary mt-4" style={{
                     fontFamily: "Pacifico"
                 }}>Sign up</h1>
                 
