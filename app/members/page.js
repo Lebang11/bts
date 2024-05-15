@@ -1,5 +1,25 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import NavBar from "../navbar";
+
 const Members = () => {
+    const [data, setData] = useState([]);
+
+    const getMembers = async () => {
+      const response = await (await fetch("/api/users")).json()
+      setData(response);
+    }
+
+      useEffect(() => {
+        getMembers();
+      } , [])
+
+      let count = 0;
+
     return ( 
+      <main>
+        <NavBar/>
         <div className="ms-2 container d-flex flex-column justify-content-start align-items-start">
           <h1 className="display-4 text-secondary">
             Members
@@ -16,44 +36,32 @@ const Members = () => {
               </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope='row'>1</th>
-                    <td>Lebang</td>
-                    <td>Nong</td>
-                    <td>lnong023@student.wethinkcode.co.za</td>
-                    <td>0623997680</td>
-                    
-                    <td>Evaluator
-                    </td>
-                    
-              </tr>
-              <tr>
-                <th scope='row'>2</th>
-                    <td>John</td>
-                    <td>Jones</td>
-                    <td>jjones023@student.wethinkcode.co.za</td>
-                    <td>0823131549</td>
-
-                    <td>Student
-                    </td>
-                    
-              </tr>
-              <tr>
-                <th scope='row'>3</th>
-                    <td>Rethabile</td>
-                    <td>Malete</td>
-                    <td>rmalete023@student.wethinkcode.co.za</td>
-                    <td>0722272188</td>
-
-                    <td>Evaluator
-                    </td>
-                    
-              </tr>
+              {
+                data.map((member) => {
+                  count += 1;
+                  return (
+                    <tr>
+                      <th scope='row'>{count}</th>
+                          <td>{member.name}</td>
+                          <td>{member.surname}</td>
+                          <td>{member.email}</td>
+                          <td>{member.phone}</td>
+                          
+                          <td>{member.role}
+                          </td>
+                          
+                    </tr>
+                  )
+                })
+              }
+            
+             
                     
             </tbody>
           </table>
              
         </div>
+        </main>
      );
 }
  

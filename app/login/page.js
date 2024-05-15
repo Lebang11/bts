@@ -6,12 +6,13 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from 'next/navigation';
 import styles from "./page.module.css";
+import NavBar from "../navbar";
 
 
 
 //Testing:
 
-const loginURL =`http://localhost:3000/api/login`
+const loginURL =`/api/auth`
 
 
 const Login = () => {
@@ -22,43 +23,71 @@ const Login = () => {
     const [error, setError] = useState("");
     const [token, setToken] = useState("");
 
-    const router = useRouter()
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
 
         e.preventDefault();
         axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
-        setLoading(true)
-  
-        await axios.post(loginURL, {
-        email,
-        password,
+        setLoading(true);
+        console.log(email);
+        console.log(password);
+
+        fetch("/api/auth", {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify({
+                email,
+                password})
         })
-        .then(response => {
-            Cookies.set('token_id', response.data.token_id , { expires: 7 });
-            Cookies.set('token_name', response.data.token_name , { expires: 7 });
-            Cookies.set('token_email', response.data.token_email , { expires: 7 });
-            setToken(Cookies.get('token_name'))
-            setLoading(false)
-            setError("")
-            router.push('/');
+        .then(async response => {
+            const body = await response.json();
+            if (body.error) {
+                console.log(body.error);
+                setLoading(false);
+                setError(body.error)
+                setToken('')
+                setPassword('')
+            } else {
+                Cookies.set('token_id', body.id);
+                Cookies.set('token_email', body.email);
+                Cookies.set('token_name', body.name);
+                Cookies.set('token_surname', body.surname);
+                Cookies.set('token_phone', body.phone);
+                Cookies.set('token_role', body.role);
+
+                setLoading(false)
+                setError("")
+            }
+            return body;
+
+            
             })
-        .catch((err) => {
-            setLoading(false)
-            setError(err.response.data.message)
+        .then(body => {
+            if (!body.error) {
+                router.push("/members")
+            }
+            // router.push('/members');
+        })
+        .catch(async (err) => {
+            // const body = await err.json();
+            
+            console.log(err["error"]);
+            setLoading(false);
+            setError(err)
             setToken('')
             setPassword('')
         })
     }
     
-
-    function handleMessage() {
-        setMessage('Loading...')
-    }
-    
     
     
     return (
+        <main>
+        <NavBar/>
         <div className={`${styles.formboxflex} w-100 h-100`}>
             
             <form onSubmit={handleSubmit} className={styles.formbox}>
@@ -71,6 +100,8 @@ const Login = () => {
                 <div class="form-group w-75">
                     <input type="password" class="form-control" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} name="password"/>
                 </div>
+                <p className="lead text-danger fs-6">{error}</p>
+
                 
                 {!isLoading &&  <button type="submit" class={`btn btn-outline-primary submit-button`}>{message}</button>}
                 {isLoading && 
@@ -79,12 +110,12 @@ const Login = () => {
                 Loading...
                 </button>
                 }
-                <p className="error-message">{error}</p>
                 <p>{token}</p>
                 
             </form>
              
         </div>
+        </main>
     );
 }
  

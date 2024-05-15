@@ -2,6 +2,7 @@ const Router = require('express');
 const router = Router();
 const db = require('../../../database/index');
 const { hashPassword } = require('../../../utils/helpers');
+import { NextResponse } from 'next/server';
 
 
 
@@ -12,23 +13,24 @@ router.use((_req, res, next) => {
     next();
   });
 
-router.get('/', async (req, res) => {
-    db.query('SELECT * FROM users;', (err, results) => {
-        if (err) {
-            res.status(400);
-            res.send('Error fetching students: ' + err.message )
-        }
-        res.status(200).json(results.rows);
-    })
-})
+export async function GET() {
+    const data = await db.query('SELECT * FROM users;');
 
-router.post('/', async (req, res) => {
-    const name = req.body.name;
-    const surname = req.body.surname;
-    const email = req.body.email;
-    const phone = req.body.phone;
-    const role = req.body.role;
-    const password = await hashPassword(req.body.password);
+    
+    return Response.json(data.rows, {
+        status:200
+    });
+};
+
+export async function POST(req) {
+    const body = await req.json();
+
+    const name =body.name;
+    const surname =body.surname;
+    const email =body.email;
+    const phone =body.phone;
+    const role =body.role;
+    const password = await hashPassword(body.password);
 
     const userValues = [
         name, surname, email, phone, role, password
@@ -37,7 +39,25 @@ router.post('/', async (req, res) => {
         0
     ]
 
-    var userResult = await db.query('INSERT INTO users (name, surname, email, phone, role, password) VALUES($1, $2, $3, $4, $5, $6)  RETURNING id;', userValues);
+    const users = await db.query('SELECT * FROM users;');
+    let userExists = false;
+    users.rows.map((user) => {
+        if (user.email === email) {
+            console.log('Account with email already exists');
+            userExists = true;
+        } 
+    })
+
+    if (userExists) {
+        return Response.json({error: "User already exists with that email"}, {
+            status:406
+        })
+    }
+
+    
+
+
+    var userResult = await db.query('INSERT INTO users (name, surname, email, phone, role, password) VALUES($1, $2, $3, $4, $5, $6)  RETURNING *;', userValues);
     const userID = userResult.rows[0].id;
     console.log('Created user!' + userID)
 
@@ -59,8 +79,8 @@ router.post('/', async (req, res) => {
 
     }
     
-
-    res.status(201).send(`${name} ${surname} joined the party!`);
-
-});
-module.exports = router;
+    console.log(`${name} ${surname} joined the party!`)
+    return Response.json(userResult.rows[0], {
+        status:201
+    })
+};

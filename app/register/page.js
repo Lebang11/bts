@@ -6,12 +6,12 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from 'next/navigation';
 import styles from "./page.module.css";
+import NavBar from "../navbar";
 
 
 
 //Testing:
 
-const loginURL =`http://localhost:3000/api/login`
 
 const Register = () => {
     const [name, setName] =useState("");
@@ -19,51 +19,131 @@ const Register = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [role, setRole] =useState("");
     const [message, setMessage] = useState("Submit");
     const [isLoading, setLoading] = useState(false)
     const [error, setError] = useState("");
     const [token, setToken] = useState("");
-    const [colour, setColour] = useState('dark')
+    const [phone, setPhone] = useState("");
+    const router = useRouter();
 
-    const router = useRouter()
+
+    const required = async (name, class_id) => {
+        if (!name) {
+            setError('Please enter all details')
+            document.getElementById(class_id).classList.add('border-danger')
+        }
+}
+
+    const registerURL =`/api/users`;
+
 
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-        axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
-        setLoading(true)
-  
-        await axios.post(loginURL, {
-        email,
-        password,
+        setLoading(true);
+        document.querySelectorAll('.form-control').forEach((input) => {
+            input.classList.remove('border-danger')
         })
-        .then(response => {
-            Cookies.set('token_id', response.data.token_id , { expires: 7 });
-            Cookies.set('token_name', response.data.token_name , { expires: 7 });
-            Cookies.set('token_email', response.data.token_email , { expires: 7 });
-            setToken(Cookies.get('token_name'))
-            setLoading(false)
-            setError("")
-            router.push('/');
-            })
-        .catch((err) => {
-            setLoading(false)
-            setError(err.response.data.message)
-            setToken('')
-            setPassword('')
-        })
-    }
-    
 
-    function handleMessage() {
-        setMessage('Loading...')
+        if (!name || !surname || !email || !password || !confirmPassword) {
+            required(name, 'name');
+            required(surname, 'surname');
+            required(phone, 'phone')
+            required(email, 'email');
+            required(password, 'password');
+            required(confirmPassword, 'confirm-password');
+            setLoading(false);
+        } else if (password.length < 5) {
+            setPassword('');
+            setConfirmPassword('');
+            setError('Password must be at least 5 characters')
+            setLoading(false);
+            
+        } else if (password !== confirmPassword) {
+            setPassword('')
+            setConfirmPassword('')
+            setError("Password don't match")
+            setLoading(false);
+        } else if (!role) {
+            setError("Choose your role")
+            setLoading(false);
+        } else {
+            await fetch(registerURL, {
+                method:"POST",
+                body: JSON.stringify({
+                    name,
+                    surname,
+                    email,
+                    phone,
+                    password,
+                    confirmPassword,
+                    role
+                })
+            })
+            .then(async response => {
+                    const body = await response.json();
+                    if (body.error) {
+                        console.log(body.error);
+                        setLoading(false);
+                        setError(body.error)
+                        setToken('')
+                        setPassword('');
+                        setConfirmPassword('');
+
+                    } else {
+                        Cookies.set('token_id', body.id);
+                        Cookies.set('token_email', body.email);
+                        Cookies.set('token_name', body.name);
+                        Cookies.set('token_surname', body.surname);
+                        Cookies.set('token_phone', body.phone);
+                        Cookies.set('token_role', body.role);
+
+                        console.log(body);
+                        setLoading(false);
+                        setError("");
+                    }
+                    return body;
+                    })
+                    .then(body => {
+                        if (!body.error) {
+                            router.push("/members")
+                        }
+                        // router.push('/members');
+                    })
+                .catch(async (err) => {
+                    // const body = await err.json();
+                    
+                    console.log(err["error"]);
+                    setLoading(false);
+                    setError(err)
+                    setToken('')
+                    setPassword('')
+                })
+        }
+  
+
+       
+
+        
     }
-    
-    
     
     return (
+        <main>
+        <NavBar/>
         <div className={`${styles.formboxflex} w-100 h-100`}>
-            
+            {/* <button onClick={() => {
+                console.log({
+                    name,
+                surname,
+                email,
+                phone,
+                password,
+                confirmPassword,
+                role
+                })
+            }}>Show</button> */}
             <form onSubmit={handleSubmit} className={styles.formbox}>
                 <h1 className="fw-lighter text-secondary mt-4" style={{
                     fontFamily: "Pacifico"
@@ -71,37 +151,47 @@ const Register = () => {
                 
                 <div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"/>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" onChange={(e) => {
+                            if (e.target.checked) {
+                                setRole("student")
+                            }
+                        }}/>
                         <label class="form-check-label" for="inlineRadio1">Student</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"/>
+                        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2" onChange={(e) => {
+                            if (e.target.checked) {
+                                setRole("evaluator")
+                            }
+                        }}/>
                         <label class="form-check-label" for="inlineRadio2">Evaluator</label>
                     </div>
                 </div>
                 <div className="row w-75">
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-2"><div class="form-group">
-                <input type="email" class="form-control" placeholder="Name" onChange={(e) => setEmail(e.target.value)} value={email} name="email"/>
+                <input id="name" type="text" class="form-control" placeholder="Name" onChange={(e) => setName(e.target.value)} value={name} name="name"/>
                 </div></div>
                     <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 mb-2">
                         <div class="form-group">
-                    <input type="email" class="form-control" placeholder="Surname" onChange={(e) => setEmail(e.target.value)} value={email} name="email"/>
+                    <input id="surname" type="text" class="form-control" placeholder="Surname" onChange={(e) => setSurname(e.target.value)} value={surname} name="surname"/>
                     </div>
                     </div>
                 </div>
                 
                 <div class="form-group w-75">
-                <input type="email" class="form-control" placeholder="Student email" onChange={(e) => setEmail(e.target.value)} value={email} name="email"/>
+                <input id="email" type="email" class="form-control" placeholder="Student email" onChange={(e) => setEmail(e.target.value)} value={email} name="email"/>
                 </div>
                 <div class="form-group w-75">
-                <input type="email" class="form-control" placeholder="Cellphone number" onChange={(e) => setEmail(e.target.value)} value={email} name="email"/>
+                <input id="phone" type="text" class="form-control" placeholder="Cellphone number" onChange={(e) => setPhone(e.target.value)} value={phone} name="phone"/>
                 </div>
                 <div class="form-group w-75">
-                    <input type="password" class="form-control" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} name="password"/>
+                    <input id="password" type="password" class="form-control" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} name="password"/>
                 </div>
                 <div class="form-group w-75">
-                    <input type="password" class="form-control" placeholder="Confirm password" onChange={(e) => setPassword(e.target.value)} value={password} name="password"/>
+                    <input id="confirm-password" type="password" class="form-control" placeholder="Confirm password" onChange={(e) => setConfirmPassword(e.target.value)} value={confirmPassword} name="password"/>
                 </div>
+                <p className="lead fs-6 text-danger">{error}</p>
+
                 
                 {!isLoading &&  <button type="submit" class={`btn btn-outline-primary submit-button`}>{message}</button>}
                 {isLoading && 
@@ -110,12 +200,12 @@ const Register = () => {
                 Loading...
                 </button>
                 }
-                <p className="error-message">{error}</p>
                 <p>{token}</p>
                 
             </form>
              
         </div>
+        </main>
     );
 }
  

@@ -1,6 +1,40 @@
+"use client";
+import Cookies from 'js-cookie';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 const NavBar = () => {
+    const [id, setID] = useState(false);
+    const [name, setName] = useState(false);
+    const [surname, setSurname] = useState(false);
+    const [role, setRole] = useState(false);
+
+    
+
+    useEffect(() => {
+        getCookies();
+    }, [id, name, surname, role]);
+
+    function getCookies() {
+        const id = Cookies.get('token_id');
+        const name = Cookies.get('token_name');
+        const surname = Cookies.get('token_surname');
+        const role = Cookies.get('token_role');
+
+        console.log(id);
+        console.log(name);
+        console.log(surname);
+        console.log(role);
+
+        setID(id);
+        setName(name);
+        setSurname(surname);
+        setRole(role);
+
+    }
+    
+
+
     return ( 
         <nav className="border-bottom mb-3 navbar navbar-expand-sm navbar-dark bg-dark">
                 <div className="container-fluid">
@@ -32,21 +66,35 @@ const NavBar = () => {
                                 Register
                             </Link>
                         </li>
+                        {
+                            id && name && surname && role
+                            &&
                         <li className="nav-item">
                             <a className="btn nav-link text-secondary">
                                 Attendance
                             </a>
                         </li>
+                        }
+                        {
+                            id && name && surname && role === "evaluator"
+                            &&
                         <li className="nav-item">
                             <Link href={"/members"} className="btn nav-link text-secondary">
                                 Members
                             </Link>
                         </li>
+                        }
+                        {
+                            id && name && surname && role === "evaluator"
+                            &&
                         <li className="nav-item">
-                            <a className="btn nav-link text-secondary">
+                            <Link href={"/session"} className="btn nav-link text-secondary">
                                 Session
-                            </a>
+                            </Link>
                         </li>
+                        }
+                        
+                        
                         <li className="nav-item">
                             
                         </li>
