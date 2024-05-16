@@ -1,7 +1,5 @@
 "use client";
 
-import { Link } from "react-router-dom";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from 'next/navigation';
@@ -12,7 +10,7 @@ import NavBar from "../navbar";
 
 //Testing:
 
-const loginURL =`/api/auth`
+const loginURL =`/api/auth`;
 
 
 const Login = () => {
@@ -28,12 +26,11 @@ const Login = () => {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-        axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
         setLoading(true);
         console.log(email);
         console.log(password);
 
-        fetch("/api/auth", {
+        fetch(loginURL, {
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json'

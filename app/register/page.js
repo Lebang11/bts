@@ -1,7 +1,5 @@
 "use client";
 
-import { Link } from "react-router-dom";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from 'next/navigation';

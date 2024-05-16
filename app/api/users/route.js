@@ -2,7 +2,6 @@ const Router = require('express');
 const router = Router();
 const db = require('../../../database/index');
 const { hashPassword } = require('../../../utils/helpers');
-import { NextResponse } from 'next/server';
 
 
 

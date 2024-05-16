@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
 
-const Router = require('express');
-const router = Router();
 const db = require('../../../database/index');
 const { comparePassword } = require('../../../utils/helpers');
-const { NextApiRequest, NextApiResponse } = require('next');
 
 export async function GET(request) {
     const res = new NextResponse();
