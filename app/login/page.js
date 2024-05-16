@@ -92,7 +92,7 @@ const Login = () => {
                     fontFamily: "Pacifico"
                 }}>Sign in</h1>
                 <div class="form-group w-75">
-                <input type="email" class="form-control" placeholder="Enter email" onChange={(e) => setEmail(e.target.value)} value={email} name="email"/>
+                <input type="email" class="form-control" placeholder="Enter email" onChange={(e) => setEmail(e.target.value.toLowerCase())} value={email} name="email"/>
                 </div>
                 <div class="form-group w-75">
                     <input type="password" class="form-control" placeholder="Password" onChange={(e) => setPassword(e.target.value)} value={password} name="password"/>

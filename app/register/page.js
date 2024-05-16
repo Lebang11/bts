@@ -177,7 +177,7 @@ const Register = () => {
                 </div>
                 
                 <div class="form-group w-75">
-                <input id="email" type="email" class="form-control" placeholder="Student email" onChange={(e) => setEmail(e.target.value)} value={email} name="email"/>
+                <input id="email" type="email" class="form-control" placeholder="Student email" onChange={(e) => setEmail(e.target.value.toLowerCase())} value={email} name="email"/>
                 </div>
                 <div class="form-group w-75">
                 <input id="phone" type="text" class="form-control" placeholder="Cellphone number" onChange={(e) => setPhone(e.target.value)} value={phone} name="phone"/>

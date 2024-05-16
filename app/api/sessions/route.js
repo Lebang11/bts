@@ -11,8 +11,8 @@ export async function GET(req) {
 
 export async function POST(req) {
     const body = await req.json();
-    const studentEmail = body.studentEmail;
-    const evaluatorEmail = body.evaluatorEmail;
+    const studentEmail = body.studentEmail.toLowercase();
+    const evaluatorEmail = body.evaluatorEmail.toLowercase();
     const criteria1 = body.criteria1;
     const criteria2 = body.criteria2;     
     const criteria3 = body.criteria3;     
