@@ -38,17 +38,15 @@ const NavBar = () => {
     return ( 
         <nav className="border-bottom mb-3 navbar navbar-expand-sm navbar-dark bg-dark">
                 <div className="container-fluid">
-                    <a className="btn navbar-brand">
+                    <Link className="btn navbar-brand" href={"/"}>
                         <span className="d-flex align-items-center">
                         <h3 className="fw-bold d-inline-block m-0 text-primary" style={{
                           fontFamily: "Pacifico"
                         }}> 
                             BTS
                             </h3>
-                        </span>
-                        
-                        
-                    </a>
+                        </span>           
+                    </Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-nav" aria-controls="main-nav" aria-expanded="fals" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                     </button>
@@ -66,7 +64,7 @@ const NavBar = () => {
                                 Register
                             </Link>
                         </li>
-                        {
+                        {/* {
                             id && name && surname && role
                             &&
                         <li className="nav-item">
@@ -74,7 +72,7 @@ const NavBar = () => {
                                 Attendance
                             </a>
                         </li>
-                        }
+                        } */}
                         {
                             id && name && surname && role === "evaluator"
                             &&

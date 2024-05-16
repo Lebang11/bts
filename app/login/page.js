@@ -68,7 +68,7 @@ const Login = () => {
             })
         .then(body => {
             if (!body.error) {
-                router.push("/members")
+                router.push("/")
             }
             // router.push('/members');
         })
