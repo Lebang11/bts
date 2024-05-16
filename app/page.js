@@ -37,7 +37,19 @@ export default function Home() {
 
     }
 
-  return (
+    if (id && name && surname && role === "student") {
+      return (
+        <main>
+            <NavBar/>
+    
+            <h1 className="text-center display-3 text-muted">Welcome to <span>BTS</span></h1> 
+              <h4 className="lead text-center mt-4"> Signed in as {name} {surname}</h4>
+              <p className="text-center">More features coming soon...</p>
+    
+        </main>
+      );
+    } else {
+      return (
     <main>
         <NavBar/>
 
@@ -74,4 +86,7 @@ export default function Home() {
           </div> 
     </main>
   );
+    }
+
+  
 }
