@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 import { useRouter } from 'next/navigation';
 import styles from "./page.module.css";
 import NavBar from "../navbar";
-import { route } from "@/server";
 
 
 
