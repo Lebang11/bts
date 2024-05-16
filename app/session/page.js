@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { useRouter } from 'next/navigation';
 import styles from "./page.module.css";
 import NavBar from "../navbar";
+import { route } from "@/server";
 
 
 
@@ -23,7 +24,9 @@ const Session = () => {
     const [error, setError] = useState('');
     const [isLoading, setLoading] = useState(false);
 
-    const sessionURL = '/api/sessions'
+    const sessionURL = '/api/sessions';
+    const router = useRouter();
+
 
 
     const required = async (name, class_id) => {
@@ -76,6 +79,7 @@ const Session = () => {
                         console.log(body);
                         setLoading(false);
                         setError("");
+                        router.push("/");
                     }
                     return body;
                     })
