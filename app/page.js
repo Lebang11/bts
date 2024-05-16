@@ -56,11 +56,11 @@ export default function Home() {
         <h1 className="text-center display-3 text-muted">Welcome to <span>BTS</span></h1> 
         <div className="container-fluid d-flex flex-column w-25 justify-content-center ">
           
-        <Link href={"/login"} className="w-100 btn btn-outline-dark my-3">
-        <button className="btn">Login</button>
+        <Link href={"/login"} className="w-100 btn btn-outline-dark my-3 py-2">
+          Login
         </Link>
-        <Link href={"/register"} className="btn btn-outline-dark my-3">
-        <button className="btn">Register</button>     
+        <Link href={"/register"} className="btn btn-outline-dark my-3 py-2">
+        Register    
         </Link>
         {/* <Link href={"/attendance"} className="btn btn-outline-dark my-3">
         <button className="btn">Attendance</button>     
@@ -68,15 +68,15 @@ export default function Home() {
         {
           role === "evaluator" &&
 
-          <Link href={"/session"} className="btn btn-outline-dark my-3">
-          <button className="btn">Start session</button>
+          <Link href={"/session"} className="btn btn-outline-dark my-3 py-2">
+          Start session
           </Link>
         }
         {
           role === "evaluator" &&
 
-          <Link href={"/members"} className="btn btn-outline-dark my-3">
-          <button className="btn">View members</button>     
+          <Link href={"/members"} className="btn btn-outline-dark my-3 py-2">
+          View members  
           </Link>
         }
 
