@@ -11,8 +11,8 @@ export async function GET(req) {
 
 export async function POST(req) {
     const body = await req.json();
-    const studentEmail = body.studentEmail.toLowercase();
-    const evaluatorEmail = body.evaluatorEmail.toLowercase();
+    const studentEmail = body.studentEmail;
+    const evaluatorEmail = body.evaluatorEmail;
     const criteria1 = body.criteria1;
     const criteria2 = body.criteria2;     
     const criteria3 = body.criteria3;     
@@ -24,11 +24,28 @@ export async function POST(req) {
     console.log('Found student and evaluator emails')
 
     console.log(studentResult.rows);
-
+    if (studentResult.rows.length == 0) {
+            console.log("Student doesn't exist");
+            return Response.json({
+                "error": "Student doesn't exist"
+            }, {
+                status: 401
+            })
+        }
 
     var student = await db.query('SELECT * FROM students WHERE user_id = $1;', [studentResult.rows[0].id]);
     var evaluator = await db.query('SELECT * FROM evaluators WHERE user_id = $1;', [evaluatorResult.rows[0].id]);
+    
+    if (student.rows.length == 0) {
+        console.log("User is not a student.");
+        return Response.json({
+            "error": "Reviewee is not a student"
+        }, {
+            status: 401
+        })
+    }
     console.log('Found student and evaluator ID');
+
 
     console.log(student.rows);
     console.log(evaluator.rows);

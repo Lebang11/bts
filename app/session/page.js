@@ -129,7 +129,7 @@ const Session = () => {
                             minWidth: "60vw"
                         }}>Student's email address</label>
                         <input type="email" id="email" class="form-control" aria-describedby="emailHelp" onChange={(e) => {
-                            setStudentEmail(e.target.value);
+                            setStudentEmail(e.target.value.toLowerCase());
                         }}/>
                     </div>
                     <div id="emailHelp" class="form-text">Who are you reviewing?</div>
